@@ -1,24 +1,25 @@
-# Usa una imagen oficial de Python
-FROM python:3.10-slim
+# Imagen
+FROM python:3.9-slim
 
 # Establece el directorio de trabajo
 WORKDIR /app
 
-# Copia los archivos necesarios al contenedor
-COPY . /app
+# Copia los archivos necesarios
+COPY requirements.txt .
+COPY app.py .
+COPY static ./static
+COPY templates ./templates
 
-# Instala las dependencias
-RUN pip install flask psycopg2-binary
+# Instala dependencias
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Crea la carpeta de templates y static si no existen
-RUN mkdir -p templates static
+# Variables de entorno 
+ENV FLASK_APP=app.py
+ENV FLASK_ENV=production
+ENV DATABASE_URL="postgresql://wcruz:QdRmLDrQb78oXKKByl8k484k2aXdBs59@dpg-cvmpjc3e5dus739m9hk0-a/test_oz3h"
 
-# Mueve los archivos al lugar correcto si es necesario
-RUN [ -f index.html ] && mv index.html templates/index.html || true
-RUN [ -f styles.css ] && mv styles.css static/styles.css || true
 
-# Expone el puerto que usará Flask
-EXPOSE 5000
+EXPOSE 8080
 
-# Comando para iniciar la app
-CMD ["python", "app.py"]
+# Comando de inicio
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
