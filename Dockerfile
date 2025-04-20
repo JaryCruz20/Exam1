@@ -22,4 +22,4 @@ ENV DATABASE_URL="postgresql://wcruz:QdRmLDrQb78oXKKByl8k484k2aXdBs59@dpg-cvmpjc
 EXPOSE 8080
 
 # Comando de inicio
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "app:app"]
+CMD ["gunicorn", "--bind", "http://127.0.0.1:5000/", "app:app"]
